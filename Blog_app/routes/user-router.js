@@ -1,8 +1,11 @@
 const { Router } = require('express');
+const path = require("path");
 const User = require('../models/user');// get user from model/user which has the user schema 
 const { validateToken } = require('../services/authorization'); 
 const multer = require("multer");
-const upload = multer({ dest: "/public/uploads" });
+const upload = multer({
+  dest: path.join(__dirname, "..", "public", "uploads")
+});
 const { checkForAuthenticationCookie } = require('../middlewares/authentication');
 
 const router = Router();
