@@ -14,18 +14,18 @@ function Home({ user }) {
     })
       .then(async (res) => {
         console.log("Response status:", res.status);
-        
+
         const contentType = res.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
           const text = await res.text();
           console.error("Received HTML instead of JSON:", text);
           throw new Error("Server returned HTML instead of JSON");
         }
-        
+
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
-        
+
         return res.json();
       })
       .then((data) => {
@@ -40,15 +40,18 @@ function Home({ user }) {
   };
 
   useEffect(() => {
+    console.log("Fetching blogs...");
     fetchBlogs();
-  }, [location.state]); 
+  }, [location.state?.refresh]);
 
   if (loading) {
     return <div className="text-center mt-10 text-lg">Loading blogs...</div>;
   }
 
   if (error) {
-    return <div className="text-center mt-10 text-red-600 text-lg">{error}</div>;
+    return (
+      <div className="text-center mt-10 text-red-600 text-lg">{error}</div>
+    );
   }
 
   return (

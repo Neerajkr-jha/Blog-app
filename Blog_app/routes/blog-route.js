@@ -50,35 +50,72 @@ router.get('/:id', async (req, res) => {
 
 // POST new blog (protected)
 router.post('/', checkForAtuhenticationCookie('token'), upload.single("coverimg"), async (req, res) => {
-  console.log('User:', req.user);
-  console.log('File:', req.file);
-  console.log('Body:', req.body);
   
   if (!req.user) {
-    return res.status(401).json({ error: "Unauthorized - Please login" });
+   
+    return res.status(401).json({ error: "Unauthorized - Please login first" });
   }
 
   const { title, body } = req.body;
-  const coverimg = req.file;
+
+  // Validate required fields
+  if (!title || !body) {
+    return res.status(400).json({ error: "Title and body are required" });
+  }
 
   try {
     const newBlog = await Blog.create({
       title,
       body,
-      coverImageUrl: coverimg ? `/uploads/${coverimg.filename}` : undefined,
+      coverImageUrl: req.file ? `/uploads/${req.file.filename}` : undefined,
       createdBy: req.user._id,
     });
-    res.status(201).json({ success: true, blog: newBlog });
+    
+   
+    return res.status(201).json({ success: true, blog: newBlog });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 });
 
+// DELETE blog (protected)
+router.delete("/:id", checkForAtuhenticationCookie("token"), async (req, res) => {
+  try {
+    // must be logged in
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized - Please login" });
+    }
+
+    // find blog
+    const blog = await Blog.findById(req.params.id);
+    if (!blog) {
+      return res.status(404).json({ error: "Blog not found" });
+    }
+
+    // only owner can delete
+    if (blog.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ error: "You are not allowed to delete this blog" });
+    }
+
+    // delete comments linked to this blog
+    await Comment.deleteMany({ blogId: req.params.id });
+
+    // delete blog
+    await blog.deleteOne();
+
+    return res.json({ success: true, message: "Blog deleted successfully" });
+
+  } catch (err) {
+    return res.status(500).json({ error: "Failed to delete blog: " + err.message });
+  }
+});
+
+
 // POST comment (protected) - FIXED with better error handling
 router.post("/comment/:blogId", checkForAtuhenticationCookie('token'), async (req, res) => {
-  console.log('User:', req.user);
-  console.log('Body:', req.body);
-  console.log('Blog ID:', req.params.blogId);
+  // console.log('User:', req.user);
+  // console.log('Body:', req.body);
+  // console.log('Blog ID:', req.params.blogId);
   
   // Check authentication
   if (!req.user) {

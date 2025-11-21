@@ -1,18 +1,26 @@
-const {validateToken} =require('../services/authorization')
-// authentication on token -cookie
+const { validateToken } = require('../services/authorization');
+
+// Authentication on token - cookie
 function checkForAtuhenticationCookie(cookieName) {
     return (req, res, next) => {
         const cookieTokenValue = req.cookies[cookieName];
+        
         if (!cookieTokenValue) {
-            return next();
+            return next(); 
         }
+        
         try {
             const userPayload = validateToken(cookieTokenValue);
-            req.user=userPayload;
-        } catch (error) {}
-            return next();
-    }
+            req.user = userPayload;
+           
+            return next(); 
+        } catch (error) {
+           
+            return next(); 
+        }
+    };
 }
-module.exports={
+
+module.exports = {
     checkForAtuhenticationCookie
-}
+};

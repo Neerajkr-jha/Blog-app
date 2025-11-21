@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { UserContext } from "../../context/UserContext"; 
+import { UserContext } from "../../context/UserContext";
 
 function Blog() {
-  const { user } = useContext(UserContext); 
+  const { user } = useContext(UserContext);
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
   const [comments, setComments] = useState([]);
@@ -52,13 +52,31 @@ function Blog() {
       .finally(() => setLoading(false));
   };
 
+  const handleDeleteBlog = async () => {
+    if (!window.confirm("Are you sure you want to delete this blog?")) return;
+
+    try {
+      const response = await fetch(`http://localhost:8000/api/blogs/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.error || "Failed to delete blog");
+        return;
+      }
+
+      alert("Blog deleted successfully");
+      window.location.href = "/";
+    } catch (err) {
+      alert("Error deleting blog: " + err.message);
+    }
+  };
+
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-
-    console.log("🔵 Starting comment submission...");
-    console.log("🔵 Blog ID:", id);
-    console.log("🔵 Comment text:", commentText);
-    console.log("🔵 User:", user);
 
     if (!user) {
       setCommentError("Please log in to comment");
@@ -74,7 +92,6 @@ function Blog() {
     setCommentError("");
 
     const url = `http://localhost:8000/api/blogs/comment/${id}`;
-    console.log("🔵 Posting to URL:", url);
 
     try {
       const response = await fetch(url, {
@@ -86,10 +103,7 @@ function Blog() {
         body: JSON.stringify({ content: commentText }),
       });
 
-      console.log("🔵 Response status:", response.status);
-
       const responseText = await response.text();
-      console.log("🔵 Response text:", responseText);
 
       let data;
       try {
@@ -101,15 +115,12 @@ function Blog() {
       }
 
       if (response.ok) {
-        console.log("✅ Comment added successfully:", data);
         setCommentText("");
         fetchBlogAndComments();
       } else {
-        console.error("❌ Error response:", data);
         setCommentError(data.error || "Failed to add comment");
       }
     } catch (err) {
-      console.error("❌ Failed to add comment:", err);
       setCommentError("Failed to add comment: " + err.message);
     } finally {
       setCommentLoading(false);
@@ -147,6 +158,15 @@ function Blog() {
       {/* Blog content */}
       <div className="container mx-auto mt-8 px-4 max-w-4xl">
         <h1 className="text-4xl font-bold mb-6">{blog.title}</h1>
+
+        {user && blog.createdBy && user._id === blog.createdBy._id && (
+          <button
+            onClick={handleDeleteBlog}
+            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors mb-4"
+          >
+            Delete Blog
+          </button>
+        )}
 
         {blog.coverImageUrl && (
           <img

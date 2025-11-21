@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function AddBlog() {
@@ -9,6 +9,18 @@ function AddBlog() {
     title: "",
     body: "",
   });
+
+  useEffect(() => {
+    fetch("http://localhost:8000/user/me", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user) {
+          console.log("You are logged in as:", data.user.email);
+        }
+      });
+  }, []);
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
@@ -22,6 +34,7 @@ function AddBlog() {
     }));
   };
 
+  // In AddBlog.jsx, update the handleSubmit function
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -34,26 +47,36 @@ function AddBlog() {
       data.append("title", formData.title);
       data.append("body", formData.body);
 
-      // ✅ Updated API endpoint
+      console.log("🔵 Submitting blog...");
+
       const response = await fetch("http://localhost:8000/api/blogs", {
         method: "POST",
         body: data,
         credentials: "include",
       });
 
+      console.log("🔵 Response status:", response.status);
+
       if (response.ok) {
         const resData = await response.json();
+        
+
         setSuccess("Blog added successfully!");
         setFormData({ coverimg: null, title: "", body: "" });
 
-        // ✅ Navigate to React route (not backend route)
-        navigate(`/blog/${resData.blog._id}`);
+        // 1: Navigate to home with refresh state
+        setTimeout(() => {
+          navigate("/", { state: { refresh: Date.now() } }); // Triggers refetch
+        }, 1000);
+
+        // 2: Or navigate to the blog and then home
       } else {
         const resText = await response.text();
+        
         setError("Failed to add blog: " + resText);
       }
     } catch (err) {
-      console.error(err);
+      
       setError("An error occurred. Try again.");
     } finally {
       setLoading(false);
