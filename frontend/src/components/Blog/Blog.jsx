@@ -191,10 +191,8 @@ function Blog() {
                 alt={blog.createdBy.fullname || "Author"}
                 className="w-12 h-12 rounded-full border object-cover bg-gray-200"
                 onError={(e) => {
-                  console.error("❌ Failed to load image:", e.target.src);
-                  // Fallback to initial avatar
-                  e.target.style.display = "none";
-                  e.target.nextElementSibling.style.display = "flex";
+                  console.error("Failed to load image:", e.target.src);
+                  e.target.src = "http://localhost:8000/images/avatarpf.jpg"; // local fallback
                 }}
               />
             ) : null}

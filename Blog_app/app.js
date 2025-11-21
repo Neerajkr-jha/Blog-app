@@ -9,21 +9,23 @@ const cors = require('cors');
 const Blog = require('./models/blog');
 const userRoute = require('./routes/user-router');
 const blogRoute = require('./routes/blog-route');
-const { checkForAtuhenticationCookie } = require('./middlewares/authentication');
+const { checkForAuthenticationCookie } = require('./middlewares/authentication');
 
 const app = express();
+app.set('trust proxy', 1);
+
 const PORT = process.env.PORT || 8000;
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URL).then(() => console.log("MongoDB connected"));
 
 // View engine setup
-app.set('view engine', "ejs");
-app.set('views', path.resolve("./views"));
+// app.set('view engine', "ejs");
+// app.set('views', path.resolve("./views"));
 
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: process.env.CLIENT_URL,
   credentials: true
 }));
 
@@ -33,21 +35,23 @@ app.use(cookieParser());
 
 app.use(express.static(path.resolve("./public")));
 
-app.use(checkForAtuhenticationCookie('token'));
+app.use(checkForAuthenticationCookie('token'));
 
-app.use('/api/blogs', blogRoute); 
+app.use('/api/blogs', blogRoute);
 app.use('/user', userRoute);
 
 
 app.get('/', async (req, res) => {
   const allBlogs = await Blog.find({});
-  res.render('home', {
-    user: req.user,
+  res.json({
+    message: "API is running",
+    user: req.user || null,
     blogs: allBlogs,
   });
 });
 
+
 app.listen(PORT, () => {
   console.log(`Server started at port ${PORT}`);
-  console.log(`API available at http://localhost:${PORT}/api/blogs`);
+  console.log(`API running`);
 });

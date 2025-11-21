@@ -3,7 +3,7 @@ const User = require('../models/user');// get user from model/user which has the
 const { validateToken } = require('../services/authorization'); 
 const multer = require("multer");
 const upload = multer({ dest: "/public/uploads" });
-const { checkForAtuhenticationCookie } = require('../middlewares/authentication');
+const { checkForAuthenticationCookie } = require('../middlewares/authentication');
 
 const router = Router();
 
@@ -66,14 +66,14 @@ router.get("/logout", (req, res) => {
 //profile rotes
 
 //get prof 
-router.get("/profile", checkForAtuhenticationCookie("token"), (req, res) => {
+router.get("/profile", checkForAuthenticationCookie("token"), (req, res) => {
   if (!req.user) return res.status(401).json({ error: "Unauthorized" });
   res.json({ user: req.user });
 });
 
 router.put(
   "/update",
-  checkForAtuhenticationCookie("token"),
+  checkForAuthenticationCookie("token"),
   upload.single("profileImage"),
   async (req, res) => {
     try {
@@ -101,3 +101,5 @@ router.put(
 
 
 module.exports = router;
+
+

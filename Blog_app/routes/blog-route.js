@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Import auth middleware for specific routes
-const { checkForAtuhenticationCookie } = require('../middlewares/authentication');
+const { checkForAuthenticationCookie } = require('../middlewares/authentication');
 
 // GET all blogs (public)
 router.get('/', async (req, res) => {
@@ -49,7 +49,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST new blog (protected)
-router.post('/', checkForAtuhenticationCookie('token'), upload.single("coverimg"), async (req, res) => {
+router.post('/', checkForAuthenticationCookie('token'), upload.single("coverimg"), async (req, res) => {
   
   if (!req.user) {
    
@@ -79,7 +79,7 @@ router.post('/', checkForAtuhenticationCookie('token'), upload.single("coverimg"
 });
 
 // DELETE blog (protected)
-router.delete("/:id", checkForAtuhenticationCookie("token"), async (req, res) => {
+router.delete("/:id", checkForAuthenticationCookie("token"), async (req, res) => {
   try {
     // must be logged in
     if (!req.user) {
@@ -112,7 +112,7 @@ router.delete("/:id", checkForAtuhenticationCookie("token"), async (req, res) =>
 
 
 // POST comment (protected) - FIXED with better error handling
-router.post("/comment/:blogId", checkForAtuhenticationCookie('token'), async (req, res) => {
+router.post("/comment/:blogId", checkForAuthenticationCookie('token'), async (req, res) => {
   // console.log('User:', req.user);
   // console.log('Body:', req.body);
   // console.log('Blog ID:', req.params.blogId);

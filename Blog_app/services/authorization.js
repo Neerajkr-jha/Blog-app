@@ -1,6 +1,6 @@
 const JWT= require('jsonwebtoken');
 
-const secret="hahaha@123";
+const secret = process.env.JWT_SECRET;
 // Authorization using token -json web token
 
 function createTokenForUser(user){
