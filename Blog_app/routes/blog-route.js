@@ -10,7 +10,7 @@ const router = Router();
 // Multer setup
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.resolve('./public/uploads/'));
+    cb(null, path.join(__dirname, '..', 'public', 'uploads'));
   },
   filename: function (req, file, cb) {
     cb(null, `${Date.now()}-${file.originalname}`);
@@ -37,11 +37,11 @@ router.get('/:id', async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id).populate('createdBy');
     if (!blog) return res.status(404).json({ error: "Blog not found" });
-    
+
     const comments = await Comment.find({ blogId: req.params.id })
       .populate('createdBy')
       .sort({ createdAt: -1 });
-    
+
     return res.json({ blog, comments });
   } catch (error) {
     return res.status(500).json({ error: "Something went wrong" });
@@ -50,9 +50,9 @@ router.get('/:id', async (req, res) => {
 
 // POST new blog (protected)
 router.post('/', checkForAuthenticationCookie('token'), upload.single("coverimg"), async (req, res) => {
-  
+
   if (!req.user) {
-   
+
     return res.status(401).json({ error: "Unauthorized - Please login first" });
   }
 
@@ -70,8 +70,8 @@ router.post('/', checkForAuthenticationCookie('token'), upload.single("coverimg"
       coverImageUrl: req.file ? `/uploads/${req.file.filename}` : undefined,
       createdBy: req.user._id,
     });
-    
-   
+
+
     return res.status(201).json({ success: true, blog: newBlog });
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -116,7 +116,7 @@ router.post("/comment/:blogId", checkForAuthenticationCookie('token'), async (re
   // console.log('User:', req.user);
   // console.log('Body:', req.body);
   // console.log('Blog ID:', req.params.blogId);
-  
+
   // Check authentication
   if (!req.user) {
     return res.status(401).json({ error: "Unauthorized - Please login" });
