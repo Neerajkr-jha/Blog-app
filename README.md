@@ -32,15 +32,15 @@ Use it to create, read, update, and delete blog posts, user registration/login, 
 │   ├── routes/              # API route definitions
 │   ├── middleware/          # Auth & other middleware
 │   ├── config/              # DB config, environment config
-│   ├── utils/               # Helper utilities (if any)
+│   ├── services/            
+│   ├── authorization/            
 │   ├── .env                 # Environment variables (ignored in git)
-│   ├── server.js            # Entry point for Express backend
+│   ├── app.js            # Entry point for Express backend
 │   └── package.json
 │
 ├── frontend/                # React App
 │   ├── src/
 │   │   ├── components/      # UI components
-│   │   ├── pages/           # Routes-based screens
 │   │   ├── services/        # API calls (axios etc.)
 │   │   ├── context/         # React context (auth, theme)
 │   │   ├── hooks/           # Custom hooks (optional)
