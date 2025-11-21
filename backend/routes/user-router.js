@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const path = require("path");
-const User = require('../models/user');// get user from model/user which has the user schema 
-const { validateToken } = require('../services/authorization'); 
+const User = require('../models/user');
+const { validateToken } = require('../services/authorization');
 const multer = require("multer");
 const upload = multer({
   dest: path.join(__dirname, "..", "public", "uploads")
@@ -11,33 +11,31 @@ const { checkForAuthenticationCookie } = require('../middlewares/authentication'
 const router = Router();
 
 router.get('/signin', (req, res) => {
-    return res.render("signin")
+  return res.render("signin")
 })
 
 router.get("/signup", (req, res) => {
-    return res.render("signup")
+  return res.render("signup")
 })
 
 router.post('/signin', async (req, res) => {
   const { email, password } = req.body;
   try {
     const token = await User.matchPasswordAndGenerateToken(email, password);
+
+    
     res.cookie('token', token, {
       httpOnly: true,
-      sameSite: "lax",
+      secure: true,       // required on production
+      sameSite: "none",   // required for cross-domain cookies
+      path: "/",
     });
+
     return res.json({ success: true });
   } catch (error) {
     return res.status(401).json({ error: "Incorrect email or Password" });
   }
 });
-
-
-
-
-// router.get('/logout',(req,res)=>{
-//     res.clearCookie('token').redirect('/');
-// })
 
 router.post('/signup', async (req, res) => {
   try {
@@ -62,13 +60,18 @@ router.get("/me", (req, res) => {
 });
 
 router.get("/logout", (req, res) => {
-  res.clearCookie("token");
+  
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+  });
+
   return res.json({ success: true });
 });
 
-//profile rotes
-
-//get prof 
+//profile routes
 router.get("/profile", checkForAuthenticationCookie("token"), (req, res) => {
   if (!req.user) return res.status(401).json({ error: "Unauthorized" });
   res.json({ user: req.user });
@@ -101,8 +104,4 @@ router.put(
   }
 );
 
-
-
 module.exports = router;
-
-
