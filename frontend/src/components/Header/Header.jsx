@@ -7,7 +7,7 @@ function Header() {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:8000/user/logout", {
+      await fetch(`${import.meta.env.VITE_API_URL}/user/logout`, {
         method: "GET",
         credentials: "include",
       });

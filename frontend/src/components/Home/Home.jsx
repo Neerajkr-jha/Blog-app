@@ -9,7 +9,7 @@ function Home({ user }) {
 
   const fetchBlogs = () => {
     setLoading(true);
-    fetch("http://localhost:8000/api/blogs", {
+    fetch(`${import.meta.env.VITE_API_URL}/api/blogs`, {
       credentials: "include",
     })
       .then(async (res) => {
@@ -67,7 +67,7 @@ function Home({ user }) {
               >
                 {blog.coverImageUrl && (
                   <img
-                    src={`http://localhost:8000${blog.coverImageUrl}`}
+                    src={`${import.meta.env.VITE_API_URL}${blog.coverImageUrl}`}
                     alt={blog.title}
                     className="h-48 w-full object-cover"
                   />

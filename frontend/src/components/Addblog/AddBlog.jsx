@@ -11,7 +11,7 @@ function AddBlog() {
   });
 
   useEffect(() => {
-    fetch("http://localhost:8000/user/me", {
+    fetch(`${import.meta.env.VITE_API_URL}/user/me`, {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -49,7 +49,7 @@ function AddBlog() {
 
       console.log("🔵 Submitting blog...");
 
-      const response = await fetch("http://localhost:8000/api/blogs", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/blogs`, {
         method: "POST",
         body: data,
         credentials: "include",

@@ -25,7 +25,7 @@ function Blog() {
   const fetchBlogAndComments = () => {
     setLoading(true);
 
-    fetch(`http://localhost:8000/api/blogs/${id}`, {
+    fetch(`${import.meta.env.VITE_API_URL}/api/blogs/${id}`, {
       credentials: "include",
     })
       .then(async (res) => {
@@ -56,10 +56,13 @@ function Blog() {
     if (!window.confirm("Are you sure you want to delete this blog?")) return;
 
     try {
-      const response = await fetch(`http://localhost:8000/api/blogs/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/blogs/${id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
 
       const data = await response.json();
 
@@ -91,7 +94,7 @@ function Blog() {
     setCommentLoading(true);
     setCommentError("");
 
-    const url = `http://localhost:8000/api/blogs/comment/${id}`;
+    const url = `${import.meta.env.VITE_API_URL}/api/blogs/comment/${id}`;
 
     try {
       const response = await fetch(url, {
@@ -170,7 +173,7 @@ function Blog() {
 
         {blog.coverImageUrl && (
           <img
-            src={`http://localhost:8000${blog.coverImageUrl}`}
+            src={`${import.meta.env.VITE_API_URL}${blog.coverImageUrl}`}
             alt={blog.title}
             className="w-full rounded-lg shadow-md mb-6"
           />
@@ -187,12 +190,12 @@ function Blog() {
           <div className="flex items-center gap-3 mb-8 pb-6 border-b">
             {blog.createdBy.profileImage ? (
               <img
-                src={`http://localhost:8000${blog.createdBy.profileImage}`}
+                src={`${import.meta.env.VITE_API_URL}${blog.createdBy.profileImage}`}
                 alt={blog.createdBy.fullname || "Author"}
                 className="w-12 h-12 rounded-full border object-cover bg-gray-200"
                 onError={(e) => {
                   console.error("Failed to load image:", e.target.src);
-                  e.target.src = "http://localhost:8000/images/avatarpf.jpg"; // local fallback
+                  e.target.src = `${import.meta.env.VITE_API_URL}/images/avatarpf.jpg`; // local fallback
                 }}
               />
             ) : null}
@@ -281,7 +284,7 @@ function Blog() {
                 >
                   {comment.createdBy?.profileImage ? (
                     <img
-                      src={`http://localhost:8000${comment.createdBy.profileImage}`}
+                      src={`${import.meta.env.VITE_API_URL}${comment.createdBy.profileImage}`}
                       alt={comment.createdBy.fullname}
                       className="w-10 h-10 rounded-full border"
                     />

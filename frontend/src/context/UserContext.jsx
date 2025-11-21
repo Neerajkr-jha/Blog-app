@@ -6,7 +6,7 @@ export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8000/user/me", {
+    fetch(`${import.meta.env.VITE_API_URL}/user/me`, {
       credentials: "include",
     })
       .then((res) => res.json())

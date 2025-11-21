@@ -10,7 +10,7 @@ function Profile() {
   const [isEditing, setIsEditing] = useState(false); // <-- NEW
 
   useEffect(() => {
-    fetch("http://localhost:8000/user/profile", {
+    fetch(`${import.meta.env.VITE_API_URL}/user/profile`, {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -20,7 +20,7 @@ function Profile() {
           setFullname(data.user.fullname || "");
           setPreviewImage(
             data.user.profileImage
-              ? `http://localhost:8000${data.user.profileImage}`
+              ? `${import.meta.env.VITE_API_URL}${data.user.profileImage}`
               : ""
           );
         }
@@ -38,7 +38,7 @@ function Profile() {
     if (profileImage) formData.append("profileImage", profileImage);
 
     try {
-      const res = await fetch("http://localhost:8000/user/update", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/user/update`, {
         method: "PUT",
         credentials: "include",
         body: formData,
