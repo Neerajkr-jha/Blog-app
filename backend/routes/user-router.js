@@ -22,12 +22,12 @@ router.post('/signin', async (req, res) => {
   const { email, password } = req.body;
   try {
     const token = await User.matchPasswordAndGenerateToken(email, password);
+    const isProd = process.env.NODE_ENV === "production";
 
-    
-    res.cookie('token', token, {
+    res.cookie("token", token, {
       httpOnly: true,
-      secure: true,       // required on production
-      sameSite: "none",   // required for cross-domain cookies
+      secure: isProd,                   // only true in production (Render)
+      sameSite: isProd ? "none" : "lax",
       path: "/",
     });
 
@@ -60,7 +60,7 @@ router.get("/me", (req, res) => {
 });
 
 router.get("/logout", (req, res) => {
-  
+
   res.clearCookie("token", {
     httpOnly: true,
     secure: true,
