@@ -33,11 +33,11 @@ app.use(cookieParser());
 
 app.use(express.static(path.resolve("./public")));
 
+app.use(checkForAtuhenticationCookie('token'));
 
-app.use('/api/blogs', blogRoute); // ✅ Router mounted here
+app.use('/api/blogs', blogRoute); 
 app.use('/user', userRoute);
 
-app.use(checkForAtuhenticationCookie('token'));
 
 app.get('/', async (req, res) => {
   const allBlogs = await Blog.find({});

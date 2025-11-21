@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import Header from "../Header/Header";
+import { Link, useNavigate } from "react-router-dom";
 
 function SignUp() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullname: "",
     email: "",
@@ -26,18 +28,19 @@ function SignUp() {
     try {
       const response = await fetch("http://localhost:8000/user/signup", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
-        setSuccess("Signup successful! You can now sign in.");
-        setFormData({ fullname: "", email: "", password: "" });
+        setSuccess("Signup successful! Redirecting to login...");
+
+        setTimeout(() => {
+          navigate("/user/signin"); 
+        }, 1500);
       } else {
-        const resText = await response.text();
-        setError(resText || "Signup failed. Try again.");
+        const text = await response.text();
+        setError(text || "Signup failed. Try again.");
       }
     } catch (err) {
       console.error(err);
@@ -48,103 +51,83 @@ function SignUp() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900">
-      {/* Navbar */}
-     
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full sm:w-[350px] text-center border border-zinc-300/60 rounded-2xl px-8 bg-white shadow-xl"
+      >
+        {/* Title */}
+        <h1 className="text-zinc-900 text-3xl mt-10 font-medium">
+          Create Account
+        </h1>
 
-      {/* Signup Form */}
-      <div className="container mx-auto px-4 mt-10 flex justify-center">
-        <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
-          <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
+        <p className="text-zinc-500 text-sm mt-2 pb-6">
+          Please sign up to continue
+        </p>
 
-          {success && (
-            <div className="bg-green-100 text-green-700 p-3 rounded mb-4">
-              {success}
-            </div>
-          )}
-          {error && (
-            <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Full Name */}
-            <div>
-              <label
-                htmlFor="fullname"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Full Name
-              </label>
-              <input
-                type="text"
-                name="fullname"
-                id="fullname"
-                value={formData.fullname}
-                onChange={handleChange}
-                placeholder="Enter your full name"
-                required
-                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Email address
-              </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Enter your email"
-                required
-                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                We'll never share your email with anyone else.
-              </p>
-            </div>
-
-            {/* Password */}
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Enter your password"
-                required
-                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition-colors ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              {loading ? "Signing Up..." : "Submit"}
-            </button>
-          </form>
+        {/* Full Name */}
+        <div className="flex items-center w-full mt-4 bg-white border border-zinc-300 h-12 rounded-full pl-6 gap-2">
+          <input
+            type="text"
+            placeholder="Full Name"
+            name="fullname"
+            value={formData.fullname}
+            onChange={handleChange}
+            className="bg-transparent text-zinc-600 outline-none text-sm w-full"
+            required
+          />
         </div>
-      </div>
+
+        {/* Email */}
+        <div className="flex items-center w-full mt-4 bg-white border border-zinc-300 h-12 rounded-full pl-6 gap-2">
+          <input
+            type="email"
+            placeholder="Email Address"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="bg-transparent text-zinc-600 outline-none text-sm w-full"
+            required
+          />
+        </div>
+
+        {/* Password */}
+        <div className="flex items-center mt-4 w-full bg-white border border-zinc-300 h-12 rounded-full pl-6 gap-2">
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            className="bg-transparent text-zinc-600 outline-none text-sm w-full"
+            required
+          />
+        </div>
+
+        {/* Submit */}
+        <button
+          type="submit"
+          disabled={loading}
+          className="mt-4 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90"
+        >
+          {loading ? "Creating..." : "Create Account"}
+        </button>
+
+        {/* Success / Error Messages */}
+        {success && <p className="text-green-600 text-sm mt-3">{success}</p>}
+        {error && <p className="text-red-600 text-sm mt-3">{error}</p>}
+
+        {/* Navigate to Login */}
+        <p className="text-zinc-500 text-sm mt-3 mb-11">
+          Already have an account?{" "}
+           <Link
+            to="/user/signin"               
+            className="text-indigo-500 hover:underline"
+          >
+            Sign In
+          </Link>
+        </p>
+      </form>
     </div>
   );
 }

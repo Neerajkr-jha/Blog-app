@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { UserContext } from "../../context/UserContext"; // ✅ Import context
+import { UserContext } from "../../context/UserContext"; 
 
 function Blog() {
-  // ✅ Remove user prop
-  const { user } = useContext(UserContext); // ✅ Get user from context
+  const { user } = useContext(UserContext); 
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
   const [comments, setComments] = useState([]);
@@ -14,7 +13,6 @@ function Blog() {
   const [commentLoading, setCommentLoading] = useState(false);
   const [commentError, setCommentError] = useState("");
 
-  // ✅ Add debug logs
   useEffect(() => {
     console.log("🔍 Current user from context:", user);
     console.log("🔍 User is logged in:", !!user);
@@ -45,12 +43,10 @@ function Blog() {
         return res.json();
       })
       .then((data) => {
-        console.log("✅ Fetched blog:", data);
         setBlog(data.blog);
         setComments(data.comments || []);
       })
       .catch((err) => {
-        console.error("❌ Fetch error:", err);
         setError("Failed to load blog: " + err.message);
       })
       .finally(() => setLoading(false));
@@ -208,13 +204,6 @@ function Blog() {
             Comments ({comments.length})
           </h2>
 
-          {/* ✅ Debug: Always show this to test
-          <div className="mb-4 p-3 bg-blue-50 rounded text-sm">
-            <p>Debug: User logged in? {user ? 'YES ✅' : 'NO ❌'}</p>
-            {user && <p>User: {user.email || user.fullname}</p>}
-          </div> */}
-
-          {/* Add Comment Form - Only for logged in users */}
           {user ? (
             <div className="mb-6 bg-white p-5 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-lg font-semibold mb-3">Add a Comment</h3>

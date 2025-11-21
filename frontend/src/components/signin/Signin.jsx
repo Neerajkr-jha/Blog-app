@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../Header/Header";
 
 function Signin() {
@@ -7,100 +8,101 @@ function Signin() {
     password: "",
   });
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:8000/user/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        window.location.href = "/"; 
+      } else {
+        const text = await response.text();
+        alert("Signin failed: " + text);
+      }
+    } catch (error) {
+      console.error("Signin error:", error);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  try {
-    const response = await fetch("http://localhost:8000/user/signin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-      credentials: "include", // important: allows cookies to be set
-    });
-
-    if (response.ok) {
-      // Login successful, redirect to home
-      window.location.href = "/";
-    } else {
-      // Extract error message from backend
-      const text = await response.text();
-      alert("Signin failed: " + text);
-    }
-  } catch (error) {
-    console.error("Signin error:", error);
-  }
-};
-
-
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900">
-      {/* Navbar */}
-     
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
 
-      {/* Signin Form */}
-      <div className="container mx-auto px-4 mt-10 flex justify-center">
-        <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
-          <h2 className="text-2xl font-bold text-center mb-6">Sign In</h2>
+      <form 
+        onSubmit={handleSubmit}
+        className="sm:w-[350px] w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white shadow-lg"
+      >
+        <h1 className="text-gray-900 text-3xl mt-10 font-medium">Login</h1>
+        <p className="text-gray-500 text-sm mt-2 pb-4">Please sign in to continue</p>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email */}
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Email address
-              </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Enter your email"
-                required
-                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                We'll never share your email with anyone else.
-              </p>
-            </div>
+        {/* Email Field */}
+        <div className="flex items-center w-full mt-4 bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="#6B7280" strokeWidth="2" viewBox="0 0 24 24">
+            <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+          </svg>
 
-            {/* Password */}
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Enter your password"
-                required
-                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition-colors"
-            >
-              Submit
-            </button>
-          </form>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email id"
+            value={formData.email}
+            onChange={handleChange}
+            className="border-none outline-none ring-0 w-full text-gray-700"
+            required
+          />
         </div>
-      </div>
+
+        {/* Password Field */}
+        <div className="flex items-center mt-4 w-full bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="#6B7280" strokeWidth="2" viewBox="0 0 24 24">
+            <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            className="border-none outline-none ring-0 w-full text-gray-700"
+            required
+          />
+        </div>
+
+        {/* Forget Password */}
+        <div className="mt-4 text-left text-indigo-500">
+          <button type="button" className="text-sm">Forget password?</button>
+        </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="mt-3 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"
+        >
+          Login
+        </button>
+
+        {/* Signup Link */}
+        <p className="text-gray-500 text-sm mt-3 mb-10">
+          Don't have an account?{" "}
+          <a href="/user/signup" className="text-indigo-500 hover:underline">
+            Create Account
+          </a>
+        </p>
+      </form>
+
     </div>
   );
 }

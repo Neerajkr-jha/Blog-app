@@ -29,11 +29,11 @@ function Home({ user }) {
         return res.json();
       })
       .then((data) => {
-        console.log("✅ Fetched blogs:", data);
+        console.log(" Fetched blogs:", data);
         setBlogs(data.blogs || []);
       })
       .catch((err) => {
-        console.error("❌ Fetch error:", err);
+        console.error(" Fetch error:", err);
         setError("Failed to fetch blogs: " + err.message);
       })
       .finally(() => setLoading(false));
@@ -41,7 +41,7 @@ function Home({ user }) {
 
   useEffect(() => {
     fetchBlogs();
-  }, [location.state]); // Re-fetch when location state changes
+  }, [location.state]); 
 
   if (loading) {
     return <div className="text-center mt-10 text-lg">Loading blogs...</div>;
