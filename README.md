@@ -22,6 +22,32 @@ Use it to create, read, update, and delete blog posts, user registration/login, 
 - Clear folder separation for frontend and backend  
 
 ## 📁 Repository Structure  
+
 /Blog-App
-├── backend/ ← Express API (routes, controllers, models, config)
-├── frontend/ ← React app (components, pages, services)
+│
+├── backend/                 # Express API
+│   ├── controllers/         # Controller logic for routes
+│   ├── models/              # Mongoose/DB models
+│   ├── routes/              # API route definitions
+│   ├── middleware/          # Auth & other middleware
+│   ├── config/              # DB config, environment config
+│   ├── utils/               # Helper utilities (if any)
+│   ├── .env                 # Environment variables (ignored in git)
+│   ├── server.js            # Entry point for Express backend
+│   └── package.json
+│
+├── frontend/                # React App
+│   ├── src/
+│   │   ├── components/      # UI components
+│   │   ├── pages/           # Routes-based screens
+│   │   ├── services/        # API calls (axios etc.)
+│   │   ├── context/         # React context (auth, theme)
+│   │   ├── hooks/           # Custom hooks (optional)
+│   │   ├── assets/          # Images, icons, etc.
+│   │   ├── App.js           # Root component
+│   │   └── index.js         # Entry point
+│   └── package.json
+│
+├── README.md
+└── .gitignore
+
