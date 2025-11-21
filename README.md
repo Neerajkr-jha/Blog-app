@@ -23,6 +23,7 @@ Use it to create, read, update, and delete blog posts, user registration/login, 
 
 ## 📁 Repository Structure  
 
+````text
 /Blog-App
 │
 ├── backend/                 # Express API
@@ -50,4 +51,3 @@ Use it to create, read, update, and delete blog posts, user registration/login, 
 │
 ├── README.md
 └── .gitignore
-
