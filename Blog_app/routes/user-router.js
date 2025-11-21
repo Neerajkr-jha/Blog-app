@@ -1,6 +1,9 @@
 const { Router } = require('express');
 const User = require('../models/user');// get user from model/user which has the user schema 
 const { validateToken } = require('../services/authorization'); 
+const multer = require("multer");
+const upload = multer({ dest: "/public/uploads" });
+const { checkForAtuhenticationCookie } = require('../middlewares/authentication');
 
 const router = Router();
 
@@ -59,6 +62,41 @@ router.get("/logout", (req, res) => {
   res.clearCookie("token");
   return res.json({ success: true });
 });
+
+//profile rotes
+
+//get prof 
+router.get("/profile", checkForAtuhenticationCookie("token"), (req, res) => {
+  if (!req.user) return res.status(401).json({ error: "Unauthorized" });
+  res.json({ user: req.user });
+});
+
+router.put(
+  "/update",
+  checkForAtuhenticationCookie("token"),
+  upload.single("profileImage"),
+  async (req, res) => {
+    try {
+      const updateData = {
+        fullname: req.body.fullname,
+      };
+
+      if (req.file) {
+        updateData.profileImage = `/uploads/${req.file.filename}`;
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(
+        req.user._id,
+        updateData,
+        { new: true }
+      );
+
+      res.json({ success: true, user: updatedUser });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to update profile" });
+    }
+  }
+);
 
 
 

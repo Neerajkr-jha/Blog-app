@@ -15,6 +15,7 @@ import SignUp from "./components/Signup/SignUp.jsx";
 import Signin from "./components/signin/Signin.jsx";
 import Home from "./components/Home/Home.jsx";
 import AddBlog from "./components/Addblog/AddBlog.jsx";
+import Profile from './components/Profile.jsx';
 
 
 const router = createBrowserRouter(
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
         <Route path="/blog/add-new" element={<AddBlog />} />
         <Route path="/user/signup" element={<SignUp />} />
         <Route path="/user/signin" element={<Signin />} />
+        <Route path="/user/profile" element={<Profile />} />
       </Route>
     </>
   )

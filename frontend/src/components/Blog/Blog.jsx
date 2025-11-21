@@ -14,8 +14,8 @@ function Blog() {
   const [commentError, setCommentError] = useState("");
 
   useEffect(() => {
-    console.log("🔍 Current user from context:", user);
-    console.log("🔍 User is logged in:", !!user);
+    console.log(" Current user from context:", user);
+    console.log(" User is logged in:", !!user);
   }, [user]);
 
   useEffect(() => {

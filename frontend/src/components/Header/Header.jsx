@@ -29,12 +29,9 @@ function Header() {
 
       {/* Right - Navigation */}
       <nav className="flex items-center space-x-6">
-        <Link
-        to="/"
-        className="tracking-wide hover:text-indigo-400 transition"
-      >
-        Home
-      </Link>
+        <Link to="/" className="tracking-wide hover:text-indigo-400 transition">
+          Home
+        </Link>
         {user ? (
           <>
             {/* Show to signed-in users */}
@@ -51,6 +48,13 @@ function Header() {
               </button>
 
               <div className="absolute right-0 mt-2 bg-white text-black rounded-md shadow-md w-32 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                <Link
+                  to="/user/profile"
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-200 transition"
+                >
+                  View Profile
+                </Link>
+
                 <button
                   onClick={handleLogout}
                   className="block w-full text-left px-4 py-2 hover:bg-gray-200 transition"
