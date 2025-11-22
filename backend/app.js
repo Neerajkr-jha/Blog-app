@@ -25,10 +25,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => console.log("MongoDB connecte
 
 
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://theblogs-app.netlify.app"
-  ],
+  origin: ["https://theblogs-app.netlify.app"],
   credentials: true
 }));
 
