@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 function Signin() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -22,7 +23,6 @@ function Signin() {
         },
       );
 
-      const navigate = useNavigate();
       if (response.ok) {
         navigate('/')
       } else {

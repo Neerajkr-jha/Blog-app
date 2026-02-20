@@ -7,7 +7,6 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import { UserProvider } from "./context/UserContext";
 
 import Layout from "./Layout.jsx";
 import Blog from "./components/Blog/Blog.jsx";
@@ -35,8 +34,6 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <UserProvider>
       <RouterProvider router={router} />
-    </UserProvider>
   </StrictMode>
 );
