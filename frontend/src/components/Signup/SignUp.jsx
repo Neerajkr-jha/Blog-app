@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Header from "../Header/Header";
 import { Link, useNavigate } from "react-router-dom";
 
 function SignUp() {
